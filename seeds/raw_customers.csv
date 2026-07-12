@@ -1,0 +1,11 @@
+id,first_name,last_name,email,plan
+1,Ada,Lovelace,ada@example.com,plus
+2,Alan,Turing,alan@example.com,free
+3,Grace,Hopper,grace@example.com,plus
+4,Donald,Knuth,donald@example.com,free
+5,Edsger,Dijkstra,edsger@example.com,plus
+6,Barbara,Liskov,barbara@example.com,free
+7,John,Backus,john@example.com,plus
+8,Ken,Thompson,ken@example.com,free
+9,Margaret,Hamilton,margaret@example.com,plus
+10,Tim,Berners-Lee,tim@example.com,free

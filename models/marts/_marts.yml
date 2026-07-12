@@ -1,0 +1,56 @@
+version: 2
+
+models:
+  - name: orders
+    description: "One row per order, enriched with its total payment amount."
+    columns:
+      - name: order_id
+        description: "Primary key — the order's unique id."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "The customer who placed the order."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('customers')
+                field: customer_id
+      - name: amount
+        description: "Total paid against this order, in dollars (0 if unpaid)."
+        data_tests:
+          - not_null
+
+  - name: customers
+    description: "One row per customer, with lifetime value and order history."
+    columns:
+      - name: customer_id
+        description: "Primary key — the customer's unique id."
+        data_tests:
+          - unique
+          - not_null
+      - name: number_of_orders
+        description: "Count of orders this customer has placed."
+        data_tests:
+          - not_null
+      - name: lifetime_value
+        description: "Sum of all order amounts for this customer, in dollars."
+        data_tests:
+          - not_null
+
+unit_tests:
+  - name: lifetime_value_sums_orders
+    description: "A customer's lifetime value is the sum of their order amounts."
+    model: customers
+    given:
+      - input: ref('stg_customers')
+        rows:
+          - {customer_id: 1, first_name: Ada, last_name: L, email: ada@x.com, plan: plus}
+      - input: ref('orders')
+        rows:
+          - {customer_id: 1, order_id: 101, order_date: '2025-04-01', status: completed, amount: 42.00}
+          - {customer_id: 1, order_id: 102, order_date: '2025-05-06', status: completed, amount: 18.00}
+    expect:
+      rows:
+        - {customer_id: 1, first_name: Ada, plan: plus, number_of_orders: 2, lifetime_value: 60.00, first_order_date: '2025-04-01', most_recent_order_date: '2025-05-06'}

@@ -1,0 +1,7 @@
+bookshop:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: bookshop.duckdb
+      threads: 4

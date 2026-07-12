@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "One row per customer, lightly cleaned from raw_customers."
+    columns:
+      - name: customer_id
+        description: "Primary key — the customer's unique id."
+        data_tests:
+          - unique
+          - not_null
+      - name: plan
+        description: "Subscription tier."
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['free', 'plus']
+
+  - name: stg_orders
+    description: "One row per order, lightly cleaned from raw_orders."
+    columns:
+      - name: order_id
+        description: "Primary key — the order's unique id."
+        data_tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "The customer who placed the order."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: status
+        description: "Order lifecycle status."
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['placed', 'shipped', 'completed', 'returned', 'cancelled']
+
+  - name: stg_payments
+    description: "One row per payment, with amounts converted from cents to dollars."
+    columns:
+      - name: payment_id
+        description: "Primary key — the payment's unique id."
+        data_tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: "The order this payment is against."
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_orders')
+                field: order_id
+      - name: payment_method
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['credit_card', 'bank_transfer', 'gift_card', 'coupon']

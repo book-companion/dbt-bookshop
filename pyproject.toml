@@ -1,0 +1,9 @@
+[project]
+name = "dbt-bookshop"
+version = "0.1.0"
+description = "A run-verified dbt + DuckDB project — the companion code for the 'dbt from the ground up' blog series."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dbt-duckdb>=1.10,<2.0",
+]
