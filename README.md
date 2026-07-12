@@ -17,10 +17,7 @@ uv sync
 # 2. Install dbt packages (dbt_utils)
 uv run dbt deps
 
-# 3. Load the raw CSV seeds into DuckDB
-uv run dbt seed
-
-# 4. Build every model, snapshot, and test in dependency order
+# 3. Load seeds, build models, and run tests — all in dependency order
 uv run dbt build
 ```
 
@@ -31,6 +28,13 @@ Done. PASS=35 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=35
 ```
 
 Verified against **dbt-core 1.11.12** and **dbt-duckdb 1.10.1** (the exact versions the blog series was written against).
+
+> ### ⚠️ Use `dbt build`, not `dbt run`
+> The raw data ships as CSV **seeds**, and only `dbt build` (or a separate `dbt seed`) loads them into DuckDB. Plain `dbt run` builds *models only*, so on a fresh clone it fails with:
+> ```
+> Catalog Error: Table with name raw_customers does not exist!
+> ```
+> That's expected — the seed tables just aren't there yet. If you want the `dbt run` loop the series teaches, run `uv run dbt seed` once first, then `dbt run` works.
 
 ### Querying the results
 
