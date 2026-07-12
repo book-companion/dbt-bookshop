@@ -60,3 +60,7 @@ models:
           - accepted_values:
               arguments:
                 values: ['credit_card', 'bank_transfer', 'gift_card', 'coupon']
+      - name: amount
+        description: "Payment amount in dollars — must never be negative."
+        data_tests:
+          - not_negative
