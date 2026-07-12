@@ -54,3 +54,16 @@ unit_tests:
     expect:
       rows:
         - {customer_id: 1, first_name: Ada, plan: plus, number_of_orders: 2, lifetime_value: 60.00, first_order_date: '2025-04-01', most_recent_order_date: '2025-05-06'}
+
+  - name: lifetime_value_of_customer_with_no_orders
+    description: "A customer with no orders gets lifetime value 0, not null."
+    model: customers
+    given:
+      - input: ref('stg_customers')
+        rows:
+          - {customer_id: 9, first_name: Zoe, last_name: Q, email: zoe@x.com, plan: free}
+      - input: ref('orders')
+        rows: []
+    expect:
+      rows:
+        - {customer_id: 9, first_name: Zoe, plan: free, number_of_orders: 0, lifetime_value: 0, first_order_date: , most_recent_order_date: }

@@ -24,7 +24,7 @@ uv run dbt build
 A successful `dbt build` ends with:
 
 ```
-Done. PASS=37 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=37
+Done. PASS=38 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=38
 ```
 
 Verified against **dbt-core 1.11.12** and **dbt-duckdb 1.10.1** (the exact versions the blog series was written against).
@@ -81,9 +81,9 @@ Highlights, mapped to the series:
 
 - **`ref()` / the DAG** — staging → intermediate → marts, wired by `ref()`.
 - **Seeds** — three raw CSVs (`raw_customers`, `raw_orders`, `raw_payments`) with a cancelled order, unpaid orders, and split payments so the models are non-trivial.
-- **Materializations** — staging as views, marts as tables (set by folder in `dbt_project.yml`), plus an **incremental** `order_events` model.
+- **Materializations** — staging as views, marts as tables (set by folder in `dbt_project.yml`), plus an **incremental** `order_events` model (with an explicit `incremental_strategy` and `on_schema_change`).
 - **Data tests** — `unique` / `not_null` on keys, `accepted_values`, `relationships` (referential integrity), a singular `assert_no_negative_payments`, and a custom **generic** test `not_negative`.
-- **Unit test** — `lifetime_value_sums_orders` pins the lifetime-value aggregation against fixed inputs.
+- **Unit tests** — `lifetime_value_sums_orders` pins the aggregation against fixed inputs; `lifetime_value_of_customer_with_no_orders` covers the zero-orders edge case.
 - **Jinja & macros** — `cents_to_dollars` converts integer-cent amounts to dollars; `count_by_status` is a `{% for %}` pivot that writes one order-count column per status; `dbt_utils.generate_surrogate_key` builds a payment key.
 - **Snapshots** — `customers_snapshot` records `plan` changes over time (Type-2 SCD).
 
