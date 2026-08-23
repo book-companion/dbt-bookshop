@@ -1,6 +1,6 @@
 # dbt Bookshop
 
-A small, **run-verified** dbt project that models a fictional online **bookshop**, from three raw CSVs into tested, documented analytics tables. It's the companion code for the *"dbt from the ground up"* blog series — every model, test, snapshot, and macro the series builds, in one clonable project that gets a green `dbt build` out of the box.
+A small, **run-verified** dbt project that models a fictional online **bookshop**, from three raw CSVs into tested, documented analytics tables. It's the companion code for the *"dbt: SQL Promoted to Software"* book — every model, test, snapshot, and macro the book builds, in one clonable project that gets a green `dbt build` out of the box.
 
 It runs entirely on your laptop against [DuckDB](https://duckdb.org) — no cloud warehouse, no account, no bill.
 
@@ -27,7 +27,7 @@ A successful `dbt build` ends with:
 Done. PASS=38 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=38
 ```
 
-Verified against **dbt-core 1.11.12** and **dbt-duckdb 1.10.1** (the exact versions the blog series was written against).
+Verified against **dbt-core 1.11.12** and **dbt-duckdb 1.10.1** (the exact versions the book was written against).
 
 > ### ⚠️ Use `dbt build`, not `dbt run`
 > The raw data ships as CSV **seeds**, and only `dbt build` (or a separate `dbt seed`) loads them into DuckDB. Plain `dbt run` builds *models only*, so on a fresh clone it fails with:
@@ -77,7 +77,7 @@ tests/            assert_no_negative_payments (singular)
 tests/generic/    not_negative (custom generic test)
 ```
 
-Highlights, mapped to the series:
+Highlights, mapped to the book:
 
 - **`ref()` / the DAG** — staging → intermediate → marts, wired by `ref()`.
 - **Seeds** — three raw CSVs (`raw_customers`, `raw_orders`, `raw_payments`) with a cancelled order, unpaid orders, and split payments so the models are non-trivial.
