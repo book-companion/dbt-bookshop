@@ -1,13 +1,13 @@
 # dbt Bookshop
 
-[![dbt build](https://github.com/engineers-musings-companion/dbt-bookshop/actions/workflows/build.yml/badge.svg)](https://github.com/engineers-musings-companion/dbt-bookshop/actions/workflows/build.yml)
+[![dbt build](https://github.com/book-companion/dbt-bookshop/actions/workflows/build.yml/badge.svg)](https://github.com/book-companion/dbt-bookshop/actions/workflows/build.yml)
 
 > **Matching the book.** The tag **`v1.0-book`** is the exact state of this
 > project as published in *"dbt: SQL Promoted to Software"*. `main` may move
 > ahead of the book; if you want what the chapters describe, check out the tag:
 >
 > ```bash
-> git clone --branch v1.0-book https://github.com/engineers-musings-companion/dbt-bookshop.git
+> git clone --branch v1.0-book https://github.com/book-companion/dbt-bookshop.git
 > ```
 
 A small, **run-verified** dbt project that models a fictional online **bookshop**, from three raw CSVs into tested, documented analytics tables. It's the companion code for the *"dbt: SQL Promoted to Software"* book — every model, test, snapshot, and macro the book builds, in one clonable project that gets a green `dbt build` out of the box.
