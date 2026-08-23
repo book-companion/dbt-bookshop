@@ -1,0 +1,102 @@
+version: 2
+
+# The semantic layer for the bookshop, matching the chapter "The Semantic Layer
+# and Metrics". Entities join the models together, dimensions are what you slice
+# by, and measures are the raw aggregations that metrics are built from.
+semantic_models:
+  - name: orders
+    description: One row per order, the grain the revenue metrics are built on.
+    model: ref('orders')
+    defaults:
+      agg_time_dimension: order_date
+    entities:
+      - name: order
+        type: primary
+        expr: order_id
+      - name: customer
+        type: foreign
+        expr: customer_id
+    dimensions:
+      - name: order_date
+        type: time
+        type_params:
+          time_granularity: day
+      - name: status
+        type: categorical
+    measures:
+      - name: revenue
+        description: Sum of order amounts.
+        agg: sum
+        expr: amount
+      - name: order_count
+        description: Count of orders.
+        agg: count
+        expr: order_id
+
+  # A `payments` semantic model is deliberately NOT defined here. MetricFlow
+  # requires an aggregation time dimension for every measure, and stg_payments
+  # has no date column anywhere in its lineage — raw_payments.csv is
+  # (id, order_id, payment_method, amount). Adding one anyway produces:
+  #
+  #   AssertionError: Aggregation time dimension for measure payment_count is
+  #   not set! This should either be set directly on the measure specification
+  #   in the model, or else defaulted to the primary time dimension in the data
+  #   source containing the measure.
+  #
+  # and the whole semantic manifest fails to parse. The chapter explains this.
+
+metrics:
+  - name: revenue
+    type: simple
+    label: Revenue
+    description: Sum of order amounts across all statuses.
+    type_params:
+      measure: revenue
+
+  - name: order_count
+    type: simple
+    label: Order count
+    description: How many orders were placed.
+    type_params:
+      measure: order_count
+
+  - name: average_order_value
+    type: ratio
+    label: Average order value
+    description: Revenue divided by order count.
+    type_params:
+      numerator: revenue
+      denominator: order_count
+
+  - name: cumulative_revenue
+    type: cumulative
+    label: Running revenue (all-time)
+    description: Revenue accumulated from the beginning of time.
+    type_params:
+      measure:
+        name: revenue
+
+  - name: trailing_7d_revenue
+    type: cumulative
+    label: Rolling 7-day revenue
+    description: Revenue over a trailing seven-day window.
+    type_params:
+      measure:
+        name: revenue
+      cumulative_type_params:
+        window: 7 days
+
+saved_queries:
+  - name: monthly_revenue_by_status
+    description: Revenue and average order value by month and order status.
+    query_params:
+      metrics:
+        - revenue
+        - average_order_value
+      group_by:
+        - TimeDimension('metric_time', 'month')
+        - Dimension('order__status')
+    exports:
+      - name: monthly_revenue_by_status
+        config:
+          export_as: table

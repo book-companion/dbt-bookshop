@@ -39,6 +39,14 @@ models:
         data_tests:
           - not_null
 
+  - name: metricflow_time_spine
+    description: Date spine backing MetricFlow's time-based metrics.
+    time_spine:
+      standard_granularity_column: date_day
+    columns:
+      - name: date_day
+        granularity: day
+
 unit_tests:
   - name: lifetime_value_sums_orders
     description: "A customer's lifetime value is the sum of their order amounts."

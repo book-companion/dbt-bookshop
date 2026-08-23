@@ -1,5 +1,15 @@
 # dbt Bookshop
 
+[![dbt build](https://github.com/engineers-musings-companion/dbt-bookshop/actions/workflows/build.yml/badge.svg)](https://github.com/engineers-musings-companion/dbt-bookshop/actions/workflows/build.yml)
+
+> **Matching the book.** The tag **`v1.0-book`** is the exact state of this
+> project as published in *"dbt: SQL Promoted to Software"*. `main` may move
+> ahead of the book; if you want what the chapters describe, check out the tag:
+>
+> ```bash
+> git clone --branch v1.0-book https://github.com/engineers-musings-companion/dbt-bookshop.git
+> ```
+
 A small, **run-verified** dbt project that models a fictional online **bookshop**, from three raw CSVs into tested, documented analytics tables. It's the companion code for the *"dbt: SQL Promoted to Software"* book — every model, test, snapshot, and macro the book builds, in one clonable project that gets a green `dbt build` out of the box.
 
 It runs entirely on your laptop against [DuckDB](https://duckdb.org) — no cloud warehouse, no account, no bill.
@@ -24,7 +34,7 @@ uv run dbt build
 A successful `dbt build` ends with:
 
 ```
-Done. PASS=38 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=38
+Done. PASS=39 WARN=0 ERROR=0 SKIP=0 NO-OP=1 TOTAL=40
 ```
 
 Verified against **dbt-core 1.11.12** and **dbt-duckdb 1.10.1** (the exact versions the book was written against).
@@ -53,15 +63,26 @@ from customers
 order by customer_id;
 ```
 
-### Other useful commands
+### Known-good commands
 
-```bash
-uv run dbt run                 # build models only
-uv run dbt test                # run tests only
-uv run dbt snapshot            # capture SCD2 history for customers
-uv run dbt docs generate       # build the docs site + lineage graph
-uv run dbt docs serve          # browse it on localhost
-```
+Every command below runs green against this repo at `v1.0-book`. They are grouped
+by the chapter that introduces them, so you can jump straight to whatever you are
+reading. Chapters are named rather than numbered — numbering can shift between
+printings, titles do not.
+
+| Command | What it does | Chapter |
+|---|---|---|
+| `uv run dbt build` | Seeds, models, snapshots, and tests in dependency order — **PASS=39** | *Your First Project* |
+| `uv run dbt run` | Models only (needs `dbt seed` first on a fresh clone) | *Models and the DAG* |
+| `uv run dbt test` | Data tests and unit tests only | *Testing Your Data* |
+| `uv run dbt seed` | Loads the three raw CSVs into DuckDB | *Sources and Seeds* |
+| `uv run dbt snapshot` | Captures SCD2 history for `customers` | *Snapshots* |
+| `uv run dbt run --select stg_orders+` | The selector syntax, on a real graph | *Node Selection and Build* |
+| `uv run dbt build --select state:modified+ --state ./target` | State-aware, CI-style run | *Deployment, CI, and Orchestration* |
+| `uv run dbt docs generate && uv run dbt docs serve` | Builds and browses the lineage graph | *Docs and Lineage* |
+| `uv run dbt parse` | Writes `target/manifest.json` without touching the warehouse | *Docs and Lineage* |
+| `uv run mf list metrics` | Lists the semantic layer's metrics | *The Semantic Layer and Metrics* |
+| `uv run mf query --metrics revenue --group-by metric_time` | Queries a metric through MetricFlow | *The Semantic Layer and Metrics* |
 
 ## What's in here
 

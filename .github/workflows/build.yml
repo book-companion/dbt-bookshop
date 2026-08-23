@@ -1,0 +1,32 @@
+# Proves the book's central claim on every push: this project is green out of the
+# box. If a chapter changes a model, test, or macro and this goes red, the book
+# and the code have drifted apart.
+name: dbt build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dbt Core + the DuckDB adapter
+        run: uv sync
+
+      - name: Install dbt packages
+        run: uv run dbt deps
+
+      - name: Seed, build, and test everything
+        run: uv run dbt build
+
+      - name: Show the versions this ran against
+        if: always()
+        run: uv run dbt --version
